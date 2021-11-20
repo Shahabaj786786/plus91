@@ -7,6 +7,8 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+
 	</head>
 	<body>
 	<div class="container">
@@ -20,6 +22,7 @@
 				  <div class="form-group">
 					<label>Name</label>
 					<input type="text" class="form-control" name="name" id='name'  placeholder="Enter Your Name" required>
+					
 				  </div>
 				  <div class="form-group">
 					<label>Age</label>
@@ -31,8 +34,8 @@
 				  </div>
 				  <div class="form-group">
 					<label>Mobile No</label>
-					<input type="text" class="form-control"  name="mobile" id='mobile'  placeholder="Enter Mobile Number" required>
-				  </div>
+					<input type="text" class="form-control"  name="mobile" id='mobile'  placeholder="Enter Mobile Number" required maxlength="10">
+				</div>
 				  
 				  <input type="hidden" class="form-control" name="id" id='id'  value='0' placeholder="" >
 				  
@@ -94,13 +97,52 @@
 			});
 			
 			//Insert and update using jQuery ajax
+			// $("#submit").click(function(e){
+			// 	e.preventDefault();
+			
+			// 		$.ajax({
+			// 			type:'POST',
+			// 			url:'insert.php',
+			// 			data:$("#frm").serialize(),
+			// 			success:function(res){
+			// 				// alert(res);
+			// 				var id=$("#id").val();
+			// 				if(id=="0"){
+			// 					$("#table").find("tbody").append(res);
+			// 				}else{
+			// 					$("#table").find("."+id).html(res);
+			// 				}
+							
+			// 				$("#clear").click();
+			// 				$("#submit").text("Add User");
+			// 			}
+			// 		});
+				
+			// });
+
 			$("#submit").click(function(e){
 				e.preventDefault();
-			
+				var btn=$(this);
+				var id=$("#id").val();
+				
+				//Check All Fields are filled
+				var required=true;
+				$("#frm").find("[required]").each(function(){
+					if($(this).val()==""){
+						alert($(this).attr("placeholder"));
+						$(this).focus();
+						required=false;
+						return false;
+					}
+				});
+				if(required){
 					$.ajax({
 						type:'POST',
 						url:'insert.php',
 						data:$("#frm").serialize(),
+						beforeSend:function(){
+							$(btn).text("Wait...");
+						},
 						success:function(res){
 							// alert(res);
 							var id=$("#id").val();
@@ -114,8 +156,9 @@
 							$("#submit").text("Add User");
 						}
 					});
-				
+				}
 			});
+			
 			
 			//Delete row using jQuery ajax
 			$("body").on("click",".del",function(e){
